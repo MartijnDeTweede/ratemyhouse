@@ -1,20 +1,27 @@
 const express = require('express');
 const User = require('../Models/User');
+const Video = require('../Models/Video');
 const Guid = require('guid');
 
 const router = express.Router();
 
 getUser = async (userId) => {
-  const user = await User.findOne({userid: userId});
+  const user = await User.findOne({userId: userId});
   return user;
 }
 
+getVideosforUser = async (userId) => {
+  const videos = await Video.find({userId: userId});
+  return videos;
+}
+
 //Todo, see if I can combine this with post in some way
-createInitialUser = async(emailaddress) => {
+createInitialUser = async(emailaddress, userName) => {
   const guid = Guid.create();
 
   const user =  new User({
-    userid: guid,
+    userId: guid,
+    username: userName,
     contactInfo: {
         email: emailaddress,
         phoneNumber: '',
@@ -35,7 +42,7 @@ createInitialUser = async(emailaddress) => {
     return savedUser;
   }
   catch(error) {
-  // Log the error
+    return error;
   };
 }
 
@@ -53,7 +60,8 @@ router.post('/', async (req, res) => {
     const guid = Guid.create();
 
     const user =  new User({
-        userid: guid,
+        userId: guid,
+        username: req.body.userName,
         contactInfo: {
             email: req.body.contactInfo.email,
             phoneNumber: req.body.contactInfo.phoneNumber,
@@ -72,12 +80,36 @@ router.post('/', async (req, res) => {
     try{
       const savedUser = await user.save();
       res.json(savedUser);
-    }
-    catch(error) {
+    } catch(error) {
       res.status(400).send({message:error});
     };
 });
 
+router.get('/:userId/getVideos', async (req, res) => {
+  try{
+    const videos = await getVideosforUser(req.params.userId);
+    res.json(videos);
+  } catch(error){
+    res.status(400).send({message:error});
+  }
+});
+
+router.post('/:userId/addVideo', async (req, res) => {
+  try{
+    const video = new Video({
+      room: req.body.room,
+      title: req.body.title,
+      src: req.body.src,
+      userId: req.params.userId,
+    });
+    await video.save();
+    const videos = await getVideosforUser(req.params.userId);
+    res.json(videos);
+  } catch(error){
+    res.status(400).send({message:error});
+  }
+});
+
 module.exports = router;
-module.exports.getUser = this.getUser;
-module.exports.createInitialUser = this.createInitialUser;
+module.exports.getUser = getUser;
+module.exports.createInitialUser = createInitialUser;
