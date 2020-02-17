@@ -6,7 +6,7 @@ const videoSchema = mongoose.Schema({
   src: {type: String, required: true},
   userId: {type: String, required: true},
   ratingPoints: {type: Number, default: 0},
-  nrOfRates: {type: Number, default: 0},
+  nrOfRates:{type: Number, default: 0},
 });
 
 module.exports = mongoose.model('Video', videoSchema);

@@ -1,59 +1,45 @@
 const express = require('express');
 const Rating = require('../Models/Rating');
-
+const Video = require('../Models/Video');
 const router = express.Router();
+
+getVideo = async (videoId) => {
+  const video = await Video.findById(videoId);
+  return video;
+}
 
 userRatedVideo = async (userId, videoId) => {
   const exists = await Rating.exists({userId: userId, videoId: videoId });
   return exists;
 }
 
-getRatingForVideo = async (videoId) => {
-  const ratings = await Rating.find({videoId: videoId});
-  return ratings;
-}
-
-getRatingObjectForVideo = async(videoId) => {
-  const ratings = await getRatingForVideo(videoId);
-  const ratingPoints = ratings.reduce((total, rating) => {
-    return total + rating.rating;
-  }, 0)
-
-  return ({
-    ratingPoints: ratingPoints,
-    nrOfRates: ratings.length,
-  });
-}
-
 router.post('/:videoId/rateVideo', async (req, res) => {
   try{
-    if(await userRatedVideo(req.body.userId, req.params.videoId)) {
+    const videoId = req.params.videoId;
+    if(await userRatedVideo(videoId)) {
       res.status(400).send({message: "You already ranked this house"});
     } else {
-      const ranking = new Rating({
-        videoId: req.params.videoId,
-        userId: req.body.userId,
-        rating: req.body.rating,
-      });
-      await ranking.save();
 
-      // get rating vor video
-      // check if hs
-      // update hs
-      res.status(200).send();
+      const video = await getVideo(videoId);
+      if(video) {
+        const newRating = parseInt(video.ratingPoints) + parseInt(req.body.rating, 10);
+        const newNrOfRates = video.nrOfRates + 1;
+        await Video.updateOne({_id: videoId}, {ratingPoints: newRating, nrOfRates: newNrOfRates});
+        
+        // Save rating so one cannot vote twice
+        const ranking = new Rating({
+          videoId: videoId,
+          userId: req.body.userId,
+        });
+        await ranking.save();
+        res.json(updatedVideo);
+      } else {
+        res.status(400).send({message: 'Video not found'});
+      }
     }
   } catch(error){
     res.status(400).send({message:error});
   }
 });
-
-router.get('/:videoId/getRating', async (req, res) => {
-  try{
-    const ratingObject = await getRatingObjectForVideo(req.params.videoId);
-    res.json(ratingObject);
-  } catch(error) {
-    res.status(400).send({message:error});
-  }
-})
 
 module.exports = router;
