@@ -3,11 +3,12 @@ const mongoose = require('mongoose');
 
 require('dotenv/config');
 
+// Import routs
+const authRoutes = require('./Routes/auth');
+
 const app = express();
 
-app.get('/', (req, res) => {
-    res.send('We are on home');
-});
+app.use('/auth', authRoutes);
 
 mongoose.connect(
     process.env.DB_CONNECTION,
