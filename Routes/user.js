@@ -57,8 +57,6 @@ router.get('/:userId', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const guid = Guid.create();
-
     const user =  new User({
         userName: req.body.userName,
         contactInfo: {
