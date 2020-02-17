@@ -11,6 +11,12 @@ router.post('/signup', (req, res) => {
     try{
         // check if exist in db;
 
+
+        // create new user in auth
+        // create new user in users
+
+        
+
         res.send('We are on auth signup');
     }
     catch(error) {
