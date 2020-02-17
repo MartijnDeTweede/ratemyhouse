@@ -6,7 +6,7 @@ const Guid = require('guid');
 const router = express.Router();
 
 getUser = async (userId) => {
-  const user = await User.findOne({userId: userId});
+  const user = await User.findById(userId);
   return user;
 }
 
@@ -60,8 +60,7 @@ router.post('/', async (req, res) => {
     const guid = Guid.create();
 
     const user =  new User({
-        userId: guid,
-        username: req.body.userName,
+        userName: req.body.userName,
         contactInfo: {
             email: req.body.contactInfo.email,
             phoneNumber: req.body.contactInfo.phoneNumber,
