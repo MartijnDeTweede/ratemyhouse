@@ -1,8 +1,13 @@
+const Guid = require('guid');
 
 const User = require('../Models/User');
 
 const getUser = async (userId) => {
   const user = await User.findById(userId);
+  return user;
+}
+const getUserByEmail = async (email) => {
+  const user = await User.findOne({ "contactInfo.email": email });
   return user;
 }
 
@@ -12,7 +17,7 @@ const createInitialUser = async(emailaddress, userName) => {
 
   const user =  new User({
     userId: guid,
-    username: userName,
+    userName: userName,
     contactInfo: {
         email: emailaddress,
         phoneNumber: '',
@@ -27,39 +32,16 @@ const createInitialUser = async(emailaddress, userName) => {
     },
     objectForSale: false,
   });
-
-  try{
-    const savedUser = await user.save();
-    return savedUser;
-  }
-  catch(error) {
-    return error;
-  };
-}
-
-const createUser = async(body) => {
-  try{
-    const user =  new User({
-      userName: body.userName,
-      contactInfo: {
-          email: body.contactInfo.email,
-          phoneNumber: body.contactInfo.phoneNumber,
-      },
-      location: {
-          postalCode: body.location.postalCode,
-          city: body.location.city,
-          county: body.location.county,
-          street: body.location.street,
-          houseNumber: body.location.houseNumber,
-          houseNumberAddition: body.location.houseNumberAddition,
-      },
-      objectForSale: body.objectForSale
-  });
   const savedUser = await user.save();
   return savedUser;
-  } catch(error) { return error };
+}
+
+const updateUser = async(body, userId) => {
+  const updatedUser = await User.findOneAndUpdate({_id: userId}, {$set: {...body}});
+  return updatedUser;
 }
 
 module.exports.getUser = getUser;
 module.exports.createInitialUser = createInitialUser;
-module.exports.createUser = createUser;
+module.exports.updateUser = updateUser;
+module.exports.getUserByEmail = getUserByEmail;
