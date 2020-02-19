@@ -25,13 +25,9 @@ const addVideo = async (body) => {
 }
 
 const updateRatingForVideo = async (video, rating) => {
-  try {
-    const newRating = parseInt(video.ratingPoints) + parseInt(rating, 10);
-    const newNrOfRates = video.nrOfRates + 1;
-    await Video.updateOne({_id: video._id}, {ratingPoints: newRating, nrOfRates: newNrOfRates});
-  } catch(error) {
-    return error;
-  }
+  const newRating = parseInt(video.ratingPoints) + parseInt(rating, 10);
+  const newNrOfRates = video.nrOfRates + 1;
+  await Video.updateOne({_id: video._id}, {ratingPoints: newRating, nrOfRates: newNrOfRates});
 }
 
 module.exports.getVideo = getVideo;

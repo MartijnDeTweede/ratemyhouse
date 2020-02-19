@@ -1,9 +1,12 @@
-const express = require('express');
-const router = express.Router();
+
+const router = require('express').Router();
+require('dotenv/config');
 
 const { addAuth, emailExists, generateHashedPassword, getAuthByEmail, credentialsAreValid } = require('../Helpers/authHelper');
 const {validateSignUp, loginValidation } = require('../Validators/authValidators');
 const { createInitialUser, getUserByEmail } = require('../Helpers/userHelper');
+const { handleBadRequest } = require('../Helpers/responseHelpers');
+const { sendValidRequestWithUser } = require('../Helpers/succesResponseHelper');
 
 router.post('/signup', async (req, res) => {
     try{
@@ -13,15 +16,16 @@ router.post('/signup', async (req, res) => {
       const { email, userName, password } = req.body;
 
       const emailAlreadyExists = await emailExists(email);
-      if(emailAlreadyExists) return res.status(400).send({message: "Email already exists"});
+      if(emailAlreadyExists) handleBadRequest(res, "Email already exists.");
         
       const hashedPassword = await generateHashedPassword(password);
         await addAuth(email, hashedPassword)
-        const newUser = await createInitialUser(email, userName);
-        res.json(newUser);
+        const user = await createInitialUser(email, userName);
+        sendValidRequestWithUser(res, user);
+
     }
     catch(error) {
-        res.status(400).send({message:error});
+      handleBadRequest(res, error);
     }
 });
 
@@ -33,16 +37,16 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
   
     const emailAlreadyExists = await emailExists(email);
-    if(!emailAlreadyExists) return res.status(400).send({message: "Incorrect e-mail or password."});
+    if(!emailAlreadyExists) return handleBadRequest(res, "Incorrect e-mail or password.");
     
     const auth = await getAuthByEmail(email);
     const validpass = await credentialsAreValid(password, auth.password);
-    if(!validpass) return res.status(400).send({message: "Incorrect e-mail or password."});
+    if(!validpass) return handleBadRequest(res, "Incorrect e-mail or password.");
 
     const user = await getUserByEmail(email);
-    res.json(user);
+    sendValidRequestWithUser(res, user);
   } catch(error) {
-    res.status(400).send({message:error});
+    handleBadRequest(res, error);
   };
 });
 

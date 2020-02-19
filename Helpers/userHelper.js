@@ -7,9 +7,7 @@ const getUser = async (userId) => {
   return user;
 }
 const getUserByEmail = async (email) => {
-  const user = await User.findOne({
-    "contactInfo.email": email,
-  });
+  const user = await User.findOne({ "contactInfo.email": email });
   return user;
 }
 
@@ -38,28 +36,12 @@ const createInitialUser = async(emailaddress, userName) => {
   return savedUser;
 }
 
-const createUser = async(body) => {
-    const user =  new User({
-      userName: body.userName,
-      contactInfo: {
-          email: body.contactInfo.email,
-          phoneNumber: body.contactInfo.phoneNumber,
-      },
-      location: {
-          postalCode: body.location.postalCode,
-          city: body.location.city,
-          county: body.location.county,
-          street: body.location.street,
-          houseNumber: body.location.houseNumber,
-          houseNumberAddition: body.location.houseNumberAddition,
-      },
-      objectForSale: body.objectForSale
-  });
-  const savedUser = await user.save();
-  return savedUser;
+const updateUser = async(body, userId) => {
+  const updatedUser = await User.findOneAndUpdate({_id: userId}, {$set: {...body}});
+  return updatedUser;
 }
 
 module.exports.getUser = getUser;
 module.exports.createInitialUser = createInitialUser;
-module.exports.createUser = createUser;
+module.exports.updateUser = updateUser;
 module.exports.getUserByEmail = getUserByEmail;

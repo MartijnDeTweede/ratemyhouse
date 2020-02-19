@@ -1,6 +1,6 @@
 const Rating = require('../Models/Rating');
 
-const userRatedVideo = async (userId, videoId) => {
+const userRatedVideo = async (videoId, userId) => {
   const exists = await Rating.exists({userId: userId, videoId: videoId });
   return exists;
 }
