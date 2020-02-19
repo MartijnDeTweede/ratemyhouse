@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 require('dotenv/config');
 
-
-// Import routs
+// Import routes
 const authRoutes = require('./Routes/auth');
 const userRoutes = require('./Routes/user');
 const videoRoutes = require('./Routes/video');
