@@ -10,12 +10,12 @@ getVideosforUser = async (userId) => {
   return videos;
 }
 
-const addVideo = async (body) => {
+const addVideo = async (body, userId) => {
   const video = new Video({
     room: body.room,
     title: body.title,
     src: body.src,
-    userId: params.userId,
+    userId: userId,
   });
   await video.save();
 }
@@ -26,7 +26,16 @@ const updateRatingForVideo = async (video, rating) => {
   await Video.updateOne({_id: video._id}, {ratingPoints: newRating, nrOfRates: newNrOfRates});
 }
 
+const getHighestRatedVideos = async (nrOfVideos, minimalNrRatings) => {
+  const videos = await Video.find({"nrOfRates": { $gte: minimalNrRatings} })
+  .sort({ ratingPoints : -1})
+  .limit(nrOfVideos)
+  .exec();
+  return videos;
+}
+
 module.exports.getVideo = getVideo;
 module.exports.getVideosforUser = getVideosforUser;
 module.exports.addVideo = addVideo
 module.exports.updateRatingForVideo = updateRatingForVideo;
+module.exports.getHighestRatedVideos = getHighestRatedVideos;

@@ -34,11 +34,10 @@ router.get('/:userId/getVideos', async (req, res) => {
   }
 });
 
-// Protect
-router.post('/:userId/addVideo', async (req, res) => {
+router.post('/:userId/addVideo',verifyToken, async (req, res) => {
   try{
-    await addVideo(req.body);
-    const videos = await getVideosforUser(req.params.userId);
+    await addVideo(req.body, req.user._id);
+    const videos = await getVideosforUser(req.user._id);
     res.json(videos);
   } catch(error){
     handleBadRequest(res, error);

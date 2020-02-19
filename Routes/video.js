@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { getVideo, updateRatingForVideo } = require('../Helpers/videoHelpers');
+const { getVideo, updateRatingForVideo, getHighestRatedVideos } = require('../Helpers/videoHelpers');
 const { userRatedVideo, createRating } = require('../Helpers/ratingHelper');
 const { handleBadRequest } = require('../Helpers/responseHelpers');
 const { verifyToken } = require('../Helpers/jwtTokenHelper');
-// Protect
 
 router.post('/:videoId/rateVideo', verifyToken, async (req, res) => {
   try{
@@ -16,7 +15,7 @@ router.post('/:videoId/rateVideo', verifyToken, async (req, res) => {
       if(video) {
         await updateRatingForVideo(video, req.body.rating);
         
-        // Save rating so one cannot vote twice
+        // Save rating  in ratingscollection so one cannot vote twice
         await createRating(videoId, req.user._id);
         res.status(200).send({message:"update succesfull"});
       } else {
@@ -24,8 +23,17 @@ router.post('/:videoId/rateVideo', verifyToken, async (req, res) => {
       }
     }
   } catch(error){
-    res.status(400).send({message:error});
+    handleBadRequest(res, error);
   }
 });
 
+
+router.get('/getFeaturedVideos', async (req, res) => {
+  try {
+    const highestRatedVideos = await getHighestRatedVideos(10, 1);
+    res.json(highestRatedVideos);
+  } catch(error) {
+    handleBadRequest(res, error);
+  }
+})
 module.exports = router;
