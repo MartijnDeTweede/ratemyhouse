@@ -6,6 +6,12 @@ const getUser = async (userId) => {
   const user = await User.findById(userId);
   return user;
 }
+const getUserByEmail = async (email) => {
+  const user = await User.findOne({
+    "contactInfo.email": email,
+  });
+  return user;
+}
 
 //Todo, see if I can combine this with post in some way
 const createInitialUser = async(emailaddress, userName) => {
@@ -56,3 +62,4 @@ const createUser = async(body) => {
 module.exports.getUser = getUser;
 module.exports.createInitialUser = createInitialUser;
 module.exports.createUser = createUser;
+module.exports.getUserByEmail = getUserByEmail;
