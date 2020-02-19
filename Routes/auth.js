@@ -1,23 +1,27 @@
 const express = require('express');
-
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.send('We are on auth');
-});
+const { addAuth, emailExists, generateHashedPassword } = require('../Helpers/authHelper');
+const {validateSignUp } = require('../Validators/authValidators');
+const { createInitialUser } = require('../Helpers/userHelper');
 
-router.post('/signup', (req, res) => {
-
+router.post('/signup', async (req, res) => {
+    const {
+      email,
+      userName,
+      password,
+    } = req.body;
     try{
-        // check if exist in db;
+      const error = await validateSignUp(req.body);
+      if(error) return res.status(400).send(error);
 
-
-        // create new user in auth
-        // create new user in users
-
+      const emailAlreadyExists = await emailExists(email);
+      if(emailAlreadyExists) return res.status(400).send({message: "Email already exists"});
         
-
-        res.send('We are on auth signup');
+      const hashedPassword = await generateHashedPassword(password);
+        await addAuth(email, hashedPassword)
+        const newUser = await createInitialUser(email, userName);
+        res.json(newUser);
     }
     catch(error) {
         res.status(400).send({message:error});

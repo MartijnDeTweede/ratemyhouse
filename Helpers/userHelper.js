@@ -1,3 +1,4 @@
+const Guid = require('guid');
 
 const User = require('../Models/User');
 
@@ -12,7 +13,7 @@ const createInitialUser = async(emailaddress, userName) => {
 
   const user =  new User({
     userId: guid,
-    username: userName,
+    userName: userName,
     contactInfo: {
         email: emailaddress,
         phoneNumber: '',
@@ -27,18 +28,11 @@ const createInitialUser = async(emailaddress, userName) => {
     },
     objectForSale: false,
   });
-
-  try{
-    const savedUser = await user.save();
-    return savedUser;
-  }
-  catch(error) {
-    return error;
-  };
+  const savedUser = await user.save();
+  return savedUser;
 }
 
 const createUser = async(body) => {
-  try{
     const user =  new User({
       userName: body.userName,
       contactInfo: {
@@ -57,7 +51,6 @@ const createUser = async(body) => {
   });
   const savedUser = await user.save();
   return savedUser;
-  } catch(error) { return error };
 }
 
 module.exports.getUser = getUser;
