@@ -11,17 +11,13 @@ getVideosforUser = async (userId) => {
 }
 
 const addVideo = async (body) => {
-  try{
-    const video = new Video({
-      room: body.room,
-      title: body.title,
-      src: body.src,
-      userId: params.userId,
-    });
-    await video.save();
-  } catch(error) {
-    return error;
-  }
+  const video = new Video({
+    room: body.room,
+    title: body.title,
+    src: body.src,
+    userId: params.userId,
+  });
+  await video.save();
 }
 
 const updateRatingForVideo = async (video, rating) => {
