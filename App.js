@@ -1,3 +1,4 @@
+const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -8,7 +9,10 @@ const authRoutes = require('./Routes/auth');
 const userRoutes = require('./Routes/user');
 const videoRoutes = require('./Routes/video');
 
+
 const app = express();
+app.use(cors());
+app.options('*', cors());
 
 app.use(bodyParser.json());
 
@@ -23,4 +27,4 @@ mongoose.connect(
     console.log('connected to DB');
 })
 
-app.listen(3000);
+app.listen(4000);
