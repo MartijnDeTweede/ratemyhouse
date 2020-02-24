@@ -44,7 +44,21 @@ router.post('/login', async (req, res) => {
     if(!validpass) return handleBadRequest(res, "Incorrect e-mail or password.");
 
     const user = await getUserByEmail(email);
-    sendValidRequestWithUser(res, user);
+    const responseToSend = {
+      isLoggedIn: true,
+      userName: user.userName,
+    }
+
+    sendValidRequestWithUser(res, responseToSend);
+  } catch(error) {
+    handleBadRequest(res, error);
+  };
+});
+
+router.post('/logout', async (req, res) => {
+  try{
+    res.header('auth-token', undefined);
+    res.json({succes: true});
   } catch(error) {
     handleBadRequest(res, error);
   };
