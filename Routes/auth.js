@@ -21,8 +21,8 @@ router.post('/signup', async (req, res) => {
       const hashedPassword = await generateHashedPassword(password);
         await addAuth(email, hashedPassword)
         const user = await createInitialUser(email, userName);
-        sendValidRequestWithUser(res, user);
 
+        sendValidRequestWithUser(res, user);
     }
     catch(error) {
       handleBadRequest(res, error);
@@ -44,12 +44,7 @@ router.post('/login', async (req, res) => {
     if(!validpass) return handleBadRequest(res, "Incorrect e-mail or password.");
 
     const user = await getUserByEmail(email);
-    const responseToSend = {
-      isLoggedIn: true,
-      userName: user.userName,
-    }
-
-    sendValidRequestWithUser(res, responseToSend);
+    sendValidRequestWithUser(res, user);
   } catch(error) {
     handleBadRequest(res, error);
   };
