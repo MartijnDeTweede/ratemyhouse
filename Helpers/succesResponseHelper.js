@@ -1,9 +1,15 @@
 const { createToken } = require('./jwtTokenHelper');
 
-const sendValidRequestWithUser = (res, user) => {
+const sendValidRequestWithUserCredentials = (res, user) => {
   const token = createToken(user._id);
   res.header('auth-token', token);
-  res.json(user);
+  const responseToSend = {
+    isLoggedIn: true,
+    userName: user.userName,
+    token: token,
+  }
+
+  res.json(responseToSend);
 }
 
-module.exports.sendValidRequestWithUser = sendValidRequestWithUser;
+module.exports.sendValidRequestWithUserCredentials = sendValidRequestWithUserCredentials;

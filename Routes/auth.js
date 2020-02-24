@@ -6,7 +6,7 @@ const { addAuth, emailExists, generateHashedPassword, getAuthByEmail, credential
 const {validateSignUp, loginValidation } = require('../Validators/authValidators');
 const { createInitialUser, getUserByEmail } = require('../Helpers/userHelper');
 const { handleBadRequest } = require('../Helpers/responseHelpers');
-const { sendValidRequestWithUser } = require('../Helpers/succesResponseHelper');
+const { sendValidRequestWithUserCredentials } = require('../Helpers/succesResponseHelper');
 
 router.post('/signup', async (req, res) => {
     try{
@@ -21,8 +21,8 @@ router.post('/signup', async (req, res) => {
       const hashedPassword = await generateHashedPassword(password);
         await addAuth(email, hashedPassword)
         const user = await createInitialUser(email, userName);
-        sendValidRequestWithUser(res, user);
 
+        sendValidRequestWithUserCredentials(res, user);
     }
     catch(error) {
       handleBadRequest(res, error);
@@ -44,7 +44,16 @@ router.post('/login', async (req, res) => {
     if(!validpass) return handleBadRequest(res, "Incorrect e-mail or password.");
 
     const user = await getUserByEmail(email);
-    sendValidRequestWithUser(res, user);
+    sendValidRequestWithUserCredentials(res, user);
+  } catch(error) {
+    handleBadRequest(res, error);
+  };
+});
+
+router.post('/logout', async (req, res) => {
+  try{
+    res.header('auth-token', undefined);
+    res.json({succes: true});
   } catch(error) {
     handleBadRequest(res, error);
   };

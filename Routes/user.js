@@ -1,14 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const { getUser, updateUser } = require('../Helpers/userHelper') ;
+const { getUser, updateUser, getUserById } = require('../Helpers/userHelper') ;
 const { addVideo, getVideosforUser } = require('../Helpers/videoHelpers');
 const { handleBadRequest } = require('../Helpers/responseHelpers');
 const { verifyToken } = require('../Helpers/jwtTokenHelper');
 
 router.get('/:userName', async (req, res) => {
     try{
-        console.log('req.params.userName new: ', req.params.userName);
         const user = await getUser(req.params.userName);
         res.json(user);
     }
@@ -24,6 +23,17 @@ router.post('/updateUserInfo',verifyToken, async (req, res) => {
     } catch(error) {
       handleBadRequest(res, error);
     };
+});
+
+router.get('/:userName/isOwnPage',verifyToken, async (req, res) => {
+  const user = await getUserById(req.user._id);
+  try{
+      const isOwnPage = user.userName === req.params.userName; 
+      res.json({isOwnPage: isOwnPage});
+  }
+  catch(error) {
+    handleBadRequest(res, error);
+  }
 });
 
 router.get('/:userId/getVideos', async (req, res) => {
