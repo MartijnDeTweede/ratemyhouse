@@ -6,9 +6,10 @@ const { addVideo, getVideosforUser } = require('../Helpers/videoHelpers');
 const { handleBadRequest } = require('../Helpers/responseHelpers');
 const { verifyToken } = require('../Helpers/jwtTokenHelper');
 
-router.get('/:userId', async (req, res) => {
+router.get('/:userName', async (req, res) => {
     try{
-        const user = await getUser(req.params.userId);
+        console.log('req.params.userName new: ', req.params.userName);
+        const user = await getUser(req.params.userName);
         res.json(user);
     }
     catch(error) {

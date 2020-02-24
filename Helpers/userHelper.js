@@ -2,8 +2,8 @@ const Guid = require('guid');
 
 const User = require('../Models/User');
 
-const getUser = async (userId) => {
-  const user = await User.findById(userId);
+const getUser = async (userName) => {
+  const user = await User.findOne({userName: userName});
   return user;
 }
 const getUserByEmail = async (email) => {
