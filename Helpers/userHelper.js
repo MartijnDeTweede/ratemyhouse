@@ -43,7 +43,8 @@ const createInitialUser = async(emailaddress, userName) => {
 }
 
 const updateUser = async(body, userId) => {
-  const updatedUser = await User.findOneAndUpdate({_id: userId}, {$set: {...body}});
+  await User.findOneAndUpdate({_id: userId}, {$set: {...body}});
+  const updatedUser = User.findById(userId);
   return updatedUser;
 }
 
