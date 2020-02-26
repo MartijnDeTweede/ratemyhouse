@@ -25,10 +25,7 @@ const generateHashedPassword = async (password) => {
   return hashedPassword;
 }
 
-const credentialsAreValid = async (passwordToCheck, hashedPassword) => {
-  const isValidPass = await brcrypt.compare(passwordToCheck, hashedPassword);
-  return isValidPass;
-}
+const credentialsAreValid = async (passwordToCheck, hashedPassword) => (await brcrypt.compare(passwordToCheck, hashedPassword))
 
 module.exports.addAuth = addAuth;
 module.exports.emailExists = emailExists;

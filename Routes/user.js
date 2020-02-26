@@ -38,9 +38,7 @@ router.get('/:userName/isOwnPage',verifyToken, async (req, res) => {
 
 router.get('/:userName/getVideos', async (req, res) => {
   try{
-    console.log('req.params.userName: ', req.params.userName);
     const videos = await getVideosforUser(req.params.userName);
-    console.log('videos: ', videos);
     res.json(videos);
   } catch(error){
     handleBadRequest(res, error);

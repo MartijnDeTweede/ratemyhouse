@@ -7,7 +7,6 @@ const getVideo = async (videoId) => {
 
 getVideosforUser = async (userName) => {
   const videos = await Video.find({owner: userName});
-  console.log('videos: ', videos);
   return videos;
 }
 
@@ -19,6 +18,10 @@ const addVideo = async (body, userName) => {
     owner: userName,
   });
   await video.save();
+}
+
+const updateVideo = async(body, videoId) => {
+  await Video.findOneAndUpdate({_id: videoId}, {$set: {...body}});
 }
 
 const updateRatingForVideo = async (video, rating) => {
@@ -37,6 +40,7 @@ const getHighestRatedVideos = async (nrOfVideos, minimalNrRatings) => {
 
 module.exports.getVideo = getVideo;
 module.exports.getVideosforUser = getVideosforUser;
-module.exports.addVideo = addVideo
+module.exports.addVideo = addVideo;
+module.exports.updateVideo = updateVideo;
 module.exports.updateRatingForVideo = updateRatingForVideo;
 module.exports.getHighestRatedVideos = getHighestRatedVideos;

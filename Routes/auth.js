@@ -42,6 +42,7 @@ router.post('/login', async (req, res) => {
     const auth = await getAuthByEmail(email);
     const validpass = await credentialsAreValid(password, auth.password);
     if(!validpass) return handleBadRequest(res, "Incorrect e-mail or password.");
+  
 
     const user = await getUserByEmail(email);
     sendValidRequestWithUserCredentials(res, user);
