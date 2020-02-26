@@ -36,19 +36,21 @@ router.get('/:userName/isOwnPage',verifyToken, async (req, res) => {
   }
 });
 
-router.get('/:userId/getVideos', async (req, res) => {
+router.get('/:userName/getVideos', async (req, res) => {
   try{
-    const videos = await getVideosforUser(req.params.userId);
+    console.log('req.params.userName: ', req.params.userName);
+    const videos = await getVideosforUser(req.params.userName);
+    console.log('videos: ', videos);
     res.json(videos);
   } catch(error){
     handleBadRequest(res, error);
   }
 });
 
-router.post('/:userId/addVideo',verifyToken, async (req, res) => {
+router.post('/:userName/addVideo',verifyToken, async (req, res) => {
   try{
-    await addVideo(req.body, req.user._id);
-    const videos = await getVideosforUser(req.user._id);
+    await addVideo(req.body, req.params.userName);
+    const videos = await getVideosforUser(req.params.userName);
     res.json(videos);
   } catch(error){
     handleBadRequest(res, error);

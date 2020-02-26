@@ -5,17 +5,18 @@ const getVideo = async (videoId) => {
   return video;
 }
 
-getVideosforUser = async (userId) => {
-  const videos = await Video.find({userId: userId});
+getVideosforUser = async (userName) => {
+  const videos = await Video.find({owner: userName});
+  console.log('videos: ', videos);
   return videos;
 }
 
-const addVideo = async (body, userId) => {
+const addVideo = async (body, userName) => {
   const video = new Video({
     room: body.room,
     title: body.title,
     src: body.src,
-    userId: userId,
+    owner: userName,
   });
   await video.save();
 }
