@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getVideo, updateVideo, updateRatingForVideo, getHighestRatedVideos, getVideosforUser } = require('../Helpers/videoHelpers');
+const { getVideo, updateVideo, deleteVideo, updateRatingForVideo, getHighestRatedVideos, getVideosforUser } = require('../Helpers/videoHelpers');
 const { userRatedVideo, createRating } = require('../Helpers/ratingHelper');
 const { handleBadRequest } = require('../Helpers/responseHelpers');
 const { verifyToken } = require('../Helpers/jwtTokenHelper');
@@ -31,6 +31,19 @@ router.post('/:videoId/updateVideo', verifyToken, async (req, res) => {
   try{
     const videoId = req.params.videoId;
     await updateVideo(req.body, videoId);
+
+    const videos = await getVideosforUser(req.body.owner);
+    res.json(videos)
+
+  } catch(error){
+    handleBadRequest(res, error);
+  }
+});
+
+router.post('/:videoId/deleteVideo', verifyToken, async (req, res) => {
+  try{
+    const videoId = req.params.videoId;
+    await deleteVideo(videoId);
 
     const videos = await getVideosforUser(req.body.owner);
     res.json(videos)

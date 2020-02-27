@@ -24,6 +24,10 @@ const updateVideo = async(body, videoId) => {
   await Video.findOneAndUpdate({_id: videoId}, {$set: {...body}});
 }
 
+const deleteVideo = async(videoId) => {
+  await Video.findOneAndDelete({_id: videoId});
+}
+
 const updateRatingForVideo = async (video, rating) => {
   const newRating = parseInt(video.ratingPoints) + parseInt(rating, 10);
   const newNrOfRates = video.nrOfRates + 1;
@@ -42,5 +46,7 @@ module.exports.getVideo = getVideo;
 module.exports.getVideosforUser = getVideosforUser;
 module.exports.addVideo = addVideo;
 module.exports.updateVideo = updateVideo;
+module.exports.deleteVideo = deleteVideo;
+
 module.exports.updateRatingForVideo = updateRatingForVideo;
 module.exports.getHighestRatedVideos = getHighestRatedVideos;
