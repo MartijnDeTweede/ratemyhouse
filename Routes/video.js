@@ -1,16 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { getVideo, updateVideo, deleteVideo, updateRatingForVideo, getHighestRatedVideos, getVideosforUser } = require('../Helpers/videoHelpers');
+const { uploadHelper } = require('../Helpers/fileUploadHelper');
+
 const { userRatedVideo, createRating } = require('../Helpers/ratingHelper');
 const { handleBadRequest } = require('../Helpers/responseHelpers');
 const { verifyToken } = require('../Helpers/jwtTokenHelper');
-
-var maxSize = 150000000;
-const multer = require('multer');
-const upload = multer({
-  dest: 'uploads/',
-  limits: { fileSize: maxSize }
-});
 
 router.post('/:videoId/rateVideo', verifyToken, async (req, res) => {
   try{
@@ -60,15 +55,12 @@ router.post('/:videoId/deleteVideo', verifyToken, async (req, res) => {
   }
 });
 
-router.post('/uploadVideoFile',upload.single('productImage'), async (req, res) => {
+router.post('/uploadVideoFile',uploadHelper.single('video'), async (req, res) => {
   try{
     console.log('req: ', req);
     console.log(req.file);
-    const videoId = req.params.videoId;
-    await deleteVideo(videoId);
 
-    const videos = await getVideosforUser(req.body.owner);
-    res.json(videos)
+    res.status(200).json(req.file);
 
   } catch(error){
     handleBadRequest(res, error);
