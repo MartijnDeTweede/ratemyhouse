@@ -57,9 +57,6 @@ router.post('/:videoId/deleteVideo', verifyToken, async (req, res) => {
 
 router.post('/uploadVideoFile',uploadHelper.single('video'), async (req, res) => {
   try{
-    console.log('req: ', req);
-    console.log(req.file);
-
     res.status(200).json(req.file);
 
   } catch(error){

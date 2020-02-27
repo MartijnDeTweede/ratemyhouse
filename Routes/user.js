@@ -47,6 +47,7 @@ router.get('/:userName/getVideos', async (req, res) => {
 
 router.post('/:userName/addVideo',verifyToken, async (req, res) => {
   try{
+    console.log('req: ', req);
     await addVideo(req.body, req.params.userName);
     const videos = await getVideosforUser(req.params.userName);
     res.json(videos);

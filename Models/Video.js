@@ -7,6 +7,7 @@ const videoSchema = mongoose.Schema({
   owner: {type: String, required: true},
   ratingPoints: {type: Number, default: 0},
   nrOfRates:{type: Number, default: 0},
+  videoKey: {type: String, required: true},
 });
 
 module.exports = mongoose.model('Video', videoSchema);

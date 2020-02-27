@@ -16,11 +16,12 @@ const uploadHelper = multer({
   storage: multerS3({
     s3: s3,
     bucket: 'ratemyhouse',
+    acl: 'public-read',
     metadata: function (req, file, cb) {
-      cb(null, {fieldName: "Testing metadata"});
+      cb(null, {fieldName: file.originalname});
     },
     key: function (req, file, cb) {
-      cb(null, Date.now().toString())
+      cb(null, `${Date.now().toString()}_${file.originalname}`)
     }
   })
 })

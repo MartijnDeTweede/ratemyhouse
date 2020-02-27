@@ -16,6 +16,7 @@ const addVideo = async (body, userName) => {
     title: body.title,
     src: body.src,
     owner: userName,
+    videoKey: body.videoKey,
   });
   await video.save();
 }
