@@ -5,6 +5,13 @@ const { userRatedVideo, createRating } = require('../Helpers/ratingHelper');
 const { handleBadRequest } = require('../Helpers/responseHelpers');
 const { verifyToken } = require('../Helpers/jwtTokenHelper');
 
+var maxSize = 150000000;
+const multer = require('multer');
+const upload = multer({
+  dest: 'uploads/',
+  limits: { fileSize: maxSize }
+});
+
 router.post('/:videoId/rateVideo', verifyToken, async (req, res) => {
   try{
     const videoId = req.params.videoId;
@@ -42,6 +49,21 @@ router.post('/:videoId/updateVideo', verifyToken, async (req, res) => {
 
 router.post('/:videoId/deleteVideo', verifyToken, async (req, res) => {
   try{
+    const videoId = req.params.videoId;
+    await deleteVideo(videoId);
+
+    const videos = await getVideosforUser(req.body.owner);
+    res.json(videos)
+
+  } catch(error){
+    handleBadRequest(res, error);
+  }
+});
+
+router.post('/uploadVideoFile',upload.single('productImage'), async (req, res) => {
+  try{
+    console.log('req: ', req);
+    console.log(req.file);
     const videoId = req.params.videoId;
     await deleteVideo(videoId);
 
