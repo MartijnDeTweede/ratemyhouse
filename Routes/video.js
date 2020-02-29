@@ -3,27 +3,28 @@ const router = express.Router();
 const { getVideo, updateVideo, deleteVideo, updateRatingForVideo, getHighestRatedVideos, getVideosforUser } = require('../Helpers/videoHelpers');
 const { uploadHelper } = require('../Helpers/fileUploadHelper');
 
-const { userRatedVideo, createRating } = require('../Helpers/ratingHelper');
+const { determineAndSaveFinalRating: determineFinalRating } = require('../Helpers/ratingHelper');
 const { handleBadRequest } = require('../Helpers/responseHelpers');
 const { verifyToken } = require('../Helpers/jwtTokenHelper');
 
 router.post('/:videoId/rateVideo', verifyToken, async (req, res) => {
   try{
     const videoId = req.params.videoId;
-    if(await userRatedVideo(videoId, req.user._id)) {
-      return handleBadRequest(res, "You already ranked this house");
+    const rating = req.body.rating;
+    console.log('videoId: ', videoId);
+
+    const video = await getVideo(videoId);
+    console.log('video: ', video);
+    if(video) {
+      const finalRating = determineFinalRating(videoId, req.user._id, rating)
+      await updateRatingForVideo(video, finalRating);
+    
+    const videos = await getVideosforUser(video.owner);
+    res.json(videos)
     } else {
-      const video = await getVideo(videoId);
-      if(video) {
-        await updateRatingForVideo(video, req.body.rating);
-        
-        // Save rating  in ratingscollection so one cannot vote twice
-        await createRating(videoId, req.user._id);
-        res.status(200).send({message:"update succesfull"});
-      } else {
-        return handleBadRequest(res, 'Video not found');
-      }
+      return handleBadRequest(res, 'Video not found');
     }
+
   } catch(error){
     handleBadRequest(res, error);
   }
