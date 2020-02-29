@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const {handleAccessDenied } = require('./responseHelpers');
+const {handleAccessDenied, handleBadRequest } = require('./responseHelpers');
 require('dotenv/config');
 
 const createToken = (userId) => {
