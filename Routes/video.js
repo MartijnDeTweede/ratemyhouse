@@ -66,6 +66,7 @@ router.post('/uploadVideoFile',uploadHelper.single('video'), async (req, res) =>
 
 
 router.post('/uploadThumbnailFile',uploadHelper.single('thumbnail'), async (req, res) => {
+  console.log("Hello");
   try{
     res.status(200).json(req.file);
 
