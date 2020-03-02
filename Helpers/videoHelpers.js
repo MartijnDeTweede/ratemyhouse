@@ -14,9 +14,11 @@ const addVideo = async (body, userName) => {
   const video = new Video({
     room: body.room,
     title: body.title,
-    src: body.src,
+    videoSrc: body.videoSrc,
     owner: userName,
     videoKey: body.videoKey,
+    thumbNailSrc: body.thumbNailSrc,
+    thumbNailKey: body.thumbNailKey,
   });
   await video.save();
 }

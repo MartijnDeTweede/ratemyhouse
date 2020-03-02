@@ -15,12 +15,10 @@ const getRating = async(videoId) => (await Rating.findOne({videoId: videoId}))
 
 updateRating = async (ratingId, updatedRating) => {console.log('pre rating update');
   await Rating.findOneAndUpdate({_id: ratingId}, {$set: {rating: updatedRating}})
-  console.log('post rating update');
 };
 
 const determineAndSaveFinalRating = async (videoId, voterId, newRating) => {
   const userHasRated = await userRatedVideo(videoId, voterId);
-  console.log('userHasRated: ', userHasRated);
 
   if(userHasRated) {
     const oldRating = await getRating(videoId);

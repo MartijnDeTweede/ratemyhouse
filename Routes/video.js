@@ -65,9 +65,19 @@ router.post('/uploadVideoFile',uploadHelper.single('video'), async (req, res) =>
 });
 
 
+router.post('/uploadThumbnailFile',uploadHelper.single('thumbnail'), async (req, res) => {
+  try{
+    res.status(200).json(req.file);
+
+  } catch(error){
+    handleBadRequest(res, error);
+  }
+});
+
+
 router.get('/getFeaturedVideos', async (req, res) => {
   try {
-    const highestRatedVideos = await getHighestRatedVideos(10, 1);
+    const highestRatedVideos = await getHighestRatedVideos(12, 1);
     res.json(highestRatedVideos);
   } catch(error) {
     handleBadRequest(res, error);
