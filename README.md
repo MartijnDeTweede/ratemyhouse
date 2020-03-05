@@ -4,17 +4,10 @@ Think of RateMyHouse as a combination between Funda and instagram. Users can upl
 
 I started RateMyHouse as a side project for sharpening my Node.Js with Mongo and Express and React-Saga skills. The goad was not to deliver perfect code, but to gain insights in the frameworks. Please note the project is far from finished. Some todo's I am currently aware off (not perse in this order):
 
-Tightening up the Front-End code.
-Global error management.
-Showing (error) messages to the user.
-Form validation on all fields.
-Checking filetypes when uploading thumbnails and videos.
-Using thumbnails in videos.
-refactor all recucers to TS.
-Better typing for Actions.
-More types of featured video's.
-Add search funtionality.
-Do alot of styling.
-Add unittests for the backend.
-Add unittests for the Frontend.
-Dozens of minor tweaks.
+- Checking filetypes when uploading thumbnails and videos.
+- Better typing for Actions.
+- More types of featured video's.
+- Add search funtionality.
+- Add unittests for the backend.
+- Add unittests for the Frontend.
+- Dozens of minor tweaks.
