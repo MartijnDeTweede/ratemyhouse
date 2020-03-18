@@ -8,7 +8,7 @@ const {
   getHighestRatedVideos,
   getVideosforUser
 } = require('../Helpers/videoHelpers');
-const { uploadHelper } = require('../Helpers/fileUploadHelper');
+const { uploadHelperImage, uploadHelperVideo } = require('../Helpers/fileUploadHelper');
 
 const { 
   getRating,
@@ -81,7 +81,7 @@ router.post('/:videoId/deleteVideo', verifyToken, async (req, res) => {
   }
 });
 
-router.post('/uploadVideoFile',uploadHelper.single('video'), async (req, res) => {
+router.post('/uploadVideoFile',uploadHelperVideo.single('video'), async (req, res) => {
   try{
     res.status(200).json(req.file);
 
@@ -91,7 +91,7 @@ router.post('/uploadVideoFile',uploadHelper.single('video'), async (req, res) =>
 });
 
 
-router.post('/uploadThumbnailFile',uploadHelper.single('thumbnail'), async (req, res) => {
+router.post('/uploadThumbnailFile',uploadHelperImage.single('thumbnail'), async (req, res) => {
   console.log("Hello");
   try{
     res.status(200).json(req.file);
