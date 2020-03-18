@@ -31,10 +31,8 @@ const deleteVideo = async(videoId) => {
   await Video.findOneAndDelete({_id: videoId});
 }
 
-const updateRatingForVideo = async (video, rating, hasRated) => {
-  const newRating = parseInt(video.ratingPoints) + parseInt(rating, 10);
-  const newNrOfRates = hasRated ? video.nrOfRates: video.nrOfRates + 1;
-  await Video.updateOne({_id: video._id}, {ratingPoints: newRating, nrOfRates: newNrOfRates});
+const updateRatingForVideo = async (videoId, newRating, newNrOfRates) => {
+  await Video.updateOne({_id: videoId}, {ratingPoints: newRating, nrOfRates: newNrOfRates});
 }
 
 const getHighestRatedVideos = async (nrOfVideos, minimalNrRatings) => {

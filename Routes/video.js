@@ -1,23 +1,46 @@
 const express = require('express');
 const router = express.Router();
-const { getVideo, updateVideo, deleteVideo, updateRatingForVideo, getHighestRatedVideos, getVideosforUser } = require('../Helpers/videoHelpers');
+const { 
+  getVideo,
+  updateVideo,
+  deleteVideo,
+  updateRatingForVideo,
+  getHighestRatedVideos,
+  getVideosforUser
+} = require('../Helpers/videoHelpers');
 const { uploadHelper } = require('../Helpers/fileUploadHelper');
 
-const { determineAndSaveFinalRating, userRatedVideo } = require('../Helpers/ratingHelper');
+const { 
+  getRating,
+  userRatedVideo,
+  updateRating,
+  createRating
+} = require('../Helpers/ratingHelper');
 const { handleBadRequest } = require('../Helpers/responseHelpers');
 const { verifyToken } = require('../Helpers/jwtTokenHelper');
+const {validateVideo } = require('../Validators/videoValidator');
 
 router.post('/:videoId/rateVideo', verifyToken, async (req, res) => {
   try{
     const videoId = req.params.videoId;
     const rating = req.body.rating;
+    console.log('rating: ', rating);
 
     const video = await getVideo(videoId);
     if(video) {
-      const finalRating = await determineAndSaveFinalRating(videoId, req.user._id, rating);
-      const hadRated = await userRatedVideo(videoId, req.user._id);
-      await updateRatingForVideo(video, finalRating, hadRated);
-    
+      const userhasRated =  await userRatedVideo(videoId, req.user._id);
+      if(userhasRated) {
+        const currentrating = await getRating(videoId, req.user._id);
+        const ratingdiff = rating - currentrating.rating;
+        const newRating = parseInt(video.ratingPoints) + ratingdiff;
+        await updateRatingForVideo(videoId, newRating, video.nrOfRates);
+        await updateRating(currentrating._id, rating);
+      } else {
+        await createRating(videoId, req.user._id, rating);
+        const newRating = video.ratingPoints + rating;
+        const newNrOfRates = parseInt(video.nrOfRates) + 1;
+        await updateRatingForVideo(videoId, newRating, newNrOfRates);
+      }
       const videos = await getVideosforUser(video.owner);
     res.json(videos)
     } else {
@@ -30,6 +53,9 @@ router.post('/:videoId/rateVideo', verifyToken, async (req, res) => {
 });
 
 router.post('/:videoId/updateVideo', verifyToken, async (req, res) => {
+  const error = await validateVideo(req.body);
+  if(error) return res.status(400).send(error);
+
   try{
     const videoId = req.params.videoId;
     await updateVideo(req.body, videoId);

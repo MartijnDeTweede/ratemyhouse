@@ -17,6 +17,9 @@ router.get('/:userName', async (req, res) => {
 });
 
 router.post('/updateUserInfo',verifyToken, async (req, res) => {
+  const error = await validateUser(req.body);
+  if(error) return res.status(400).send(error);
+
     try{
       const savedUser = await updateUser(req.body, req.user._id);
       res.json(savedUser);
@@ -47,7 +50,6 @@ router.get('/:userName/getVideos', async (req, res) => {
 
 router.post('/:userName/addVideo',verifyToken, async (req, res) => {
   try{
-    console.log('req: ', req);
     await addVideo(req.body, req.params.userName);
     const videos = await getVideosforUser(req.params.userName);
     res.json(videos);

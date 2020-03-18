@@ -11,29 +11,14 @@ const createRating = async (videoId, userId, ratingValue) => {
   await rating.save();
 } 
 
-const getRating = async(videoId) => (await Rating.findOne({videoId: videoId}))
+const updateRating = async(id, rating) => (await Rating.updateOne({_id: id}, {rating: rating} ))
 
-updateRating = async (ratingId, updatedRating) => {console.log('pre rating update');
-  await Rating.findOneAndUpdate({_id: ratingId}, {$set: {rating: updatedRating}})
-};
+const getRating = async(videoId, userId) => (await Rating.findOne({videoId: videoId, userId: userId }))
 
-const determineAndSaveFinalRating = async (videoId, voterId, newRating) => {
-  const userHasRated = await userRatedVideo(videoId, voterId);
-
-  if(userHasRated) {
-    const oldRating = await getRating(videoId);
-    console.log('oldRating: ', oldRating.rating);
-    const updatedRating =  newRating- oldRating.rating;
-    console.log('updatedRating: ', updatedRating);
-    await updateRating(oldRating._id, newRating);
-    return updatedRating;
-  } else {
-    await createRating(videoId, voterId, newRating);
-    return newRating;
-  }
-}
+const hasRated = async(videoId, userId) => (await Rating.exists({videoId: videoId, userId: userId }))
 
 module.exports.userRatedVideo = userRatedVideo;
 module.exports.createRating = createRating;
 module.exports.getRating = getRating;
-module.exports.determineAndSaveFinalRating = determineAndSaveFinalRating;
+module.exports.hasRated = hasRated;
+module.exports.updateRating = updateRating;

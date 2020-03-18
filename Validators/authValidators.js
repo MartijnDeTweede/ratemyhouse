@@ -3,7 +3,7 @@ const Joi = require('@hapi/joi');
 
 const validateSignUp = async (body) => {
   const signupSchema = Joi.object({
-    email: Joi.string().required().min(10).max(100).email(),
+    email: Joi.string().required().min(5).max(100).email(),
     userName: Joi.string().required().min(4).max(30),
     password: Joi.string().required().min(8).max(30),
   });
