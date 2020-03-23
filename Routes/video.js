@@ -23,8 +23,7 @@ const {validateVideo } = require('../Validators/videoValidator');
 router.post('/:videoId/rateVideo', verifyToken, async (req, res) => {
   try{
     const videoId = req.params.videoId;
-    const rating = req.body.rating;
-    console.log('rating: ', rating);
+    const rating = req.body.rating;;
 
     const video = await getVideo(videoId);
     if(video) {
@@ -41,8 +40,7 @@ router.post('/:videoId/rateVideo', verifyToken, async (req, res) => {
         const newNrOfRates = parseInt(video.nrOfRates) + 1;
         await updateRatingForVideo(videoId, newRating, newNrOfRates);
       }
-      const videos = await getVideosforUser(video.owner);
-    res.json(videos)
+    res.json({})
     } else {
       return handleBadRequest(res, 'Video not found');
     }
@@ -92,7 +90,6 @@ router.post('/uploadVideoFile',uploadHelperVideo.single('video'), async (req, re
 
 
 router.post('/uploadThumbnailFile',uploadHelperImage.single('thumbnail'), async (req, res) => {
-  console.log("Hello");
   try{
     res.status(200).json(req.file);
 

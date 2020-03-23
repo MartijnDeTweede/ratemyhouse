@@ -36,7 +36,7 @@ const createInitialUser = async(emailaddress, userName) => {
         houseNumber:0,
         houseNumberAddition: '',
     },
-    objectForSale: false,
+    objectStatus: "notForSale",
   });
   const savedUser = await user.save();
   return savedUser;

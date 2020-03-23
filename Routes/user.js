@@ -17,9 +17,6 @@ router.get('/:userName', async (req, res) => {
 });
 
 router.post('/updateUserInfo',verifyToken, async (req, res) => {
-  const error = await validateUser(req.body);
-  if(error) return res.status(400).send(error);
-
     try{
       const savedUser = await updateUser(req.body, req.user._id);
       res.json(savedUser);

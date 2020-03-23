@@ -14,7 +14,7 @@ const userSchema = mongoose.Schema({
         houseNumber: {type: Number},
         houseNumberAddition: {type: String},
     },
-    objectForSale: {type: Boolean}
+    objectStatus: {type: String}
 })
 
 module.exports = mongoose.model('User', userSchema);

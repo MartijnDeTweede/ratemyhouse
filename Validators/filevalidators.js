@@ -7,7 +7,6 @@ const validateImage = (req, file, cb) =>{
 };
 
 const validateVideo = (req, file, cb) =>{
-  console.log('file.mimetype: ', file.mimetype);
   if(file.mimetype.includes("video") || file.mimetype === 'application/octet-stream') {
     cb(null, true);
   } else {
